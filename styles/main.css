@@ -1,0 +1,385 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: #333;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    color: #d4af37;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+header .timestamp {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Grid Layouts */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card h2 {
+    color: #d4af37;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #d4af37;
+    padding-bottom: 10px;
+}
+
+.card h3 {
+    color: #2a5298;
+    font-size: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+/* Price Display */
+.price-section {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.price-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.price-value {
+    font-weight: bold;
+    color: #d4af37;
+}
+
+.price-value.up {
+    color: #28a745;
+}
+
+.price-value.down {
+    color: #dc3545;
+}
+
+/* Structure Analysis */
+.structure-box {
+    background: #f9f9f9;
+    border-left: 4px solid #d4af37;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.structure-box:hover {
+    background: #f0f0f0;
+}
+
+.structure-box strong {
+    color: #2a5298;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1.05em;
+}
+
+.structure-box p {
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Liquidity Analysis */
+.liquidity-level {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f0f0f0;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.liquidity-label {
+    font-weight: 600;
+    color: #333;
+    min-width: 120px;
+}
+
+.liquidity-bar {
+    width: 70%;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 15px;
+}
+
+.liquidity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #d4af37);
+    transition: width 0.3s ease;
+}
+
+/* Trade Setup */
+.trade-setup {
+    background: linear-gradient(135deg, #fff8f0 0%, #ffe8d6 100%);
+    border-left: 4px solid #dc3545;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.trade-setup h4 {
+    color: #dc3545;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.trade-setup-short {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #f0fff4 0%, #dcffed 100%);
+}
+
+.trade-setup-short h4 {
+    color: #28a745;
+}
+
+.setup-item {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+.setup-item strong {
+    color: #2a5298;
+    display: inline-block;
+    min-width: 150px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+thead {
+    background: #2a5298;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr {
+    transition: background 0.3s ease;
+}
+
+tbody tr:hover {
+    background: #f5f5f5;
+}
+
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Indicators */
+.indicator-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.indicator {
+    flex: 1;
+    min-width: 150px;
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.indicator:hover {
+    background: #e8e8e8;
+    transform: translateY(-2px);
+}
+
+.indicator-name {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.indicator-value {
+    font-weight: bold;
+    color: #d4af37;
+    font-size: 1.3em;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .price-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .liquidity-level {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .liquidity-bar {
+        width: 100%;
+        margin: 0;
+    }
+
+    .indicator-row {
+        flex-direction: column;
+    }
+
+    .indicator {
+        min-width: unset;
+    }
+
+    .setup-item strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    table {
+        font-size: 0.9em;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.3em;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .price-section {
+        padding: 15px;
+    }
+
+    .structure-box,
+    .trade-setup {
+        padding: 12px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .card {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
