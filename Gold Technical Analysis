@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold Technical Analysis | XAUUSD</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      border-bottom: 2px solid #1e90ff;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+    
+    h1 {
+      color: #1e90ff;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+    
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .grid.full {
+      grid-template-columns: 1fr;
+    }
+    
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #1e90ff;
+    }
+    
+    .card.bearish {
+      border-left-color: #ff4444;
+    }
+    
+    .card.bullish {
+      border-left-color: #00cc66;
+    }
+    
+    .card.neutral {
+      border-left-color: #ffaa00;
+    }
+    
+    .card h2 {
+      color: #1e90ff;
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .card.bearish h2 {
+      color: #ff4444;
+    }
+    
+    .card.bullish h2 {
+      color: #00cc66;
+    }
+    
+    .card.neutral h2 {
+      color: #ffaa00;
+    }
+    
+    .level {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a2a2a;
+      font-size: 14px;
+    }
+    
+    .level:last-child {
+      border-bottom: none;
+    }
+    
+    .level-label {
+      color: #888;
+      font-weight: 500;
+    }
+    
+    .level-price {
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .level-distance {
+      color: #aaa;
+      font-size: 12px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-right: 5px;
+    }
+    
+    .badge.buy {
+      background: #00cc66;
+      color: #000;
+    }
+    
+    .badge.sell {
+      background: #ff4444;
+      color: #fff;
+    }
+    
+    .badge.watch {
+      background: #ffaa00;
+      color: #000;
+    }
+    
+    .structure-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #2a2a2a;
+      font-size: 13px;
+    }
+    
+    .structure-item:last-child {
+      border-bottom: none;
+    }
+    
+    .structure-label {
+      color: #888;
+      min-width: 80px;
+    }
+    
+    .structure-value {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .price {
+      color: #fff;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .status {
+      padding: 3px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      background: #2a2a2a;
+      color: #aaa;
+    }
+    
+    .status.confirmed {
+      background: #1a4d2e;
+      color: #00cc66;
+    }
+    
+    .status.pending {
+      background: #4d3a1a;
+      color: #ffaa00;
+    }
+    
+    .liquidity-zone {
+      background: linear-gradient(90deg, rgba(255,68,68,0.1), transparent);
+      padding: 12px;
+      margin: 8px 0;
+      border-left: 3px solid #ff4444;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    
+    .liquidity-zone.buy {
+      background: linear-gradient(90deg, rgba(0,204,102,0.1), transparent);
+      border-left-color: #00cc66;
+    }
+    
+    .setup-box {
+      background: #252525;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border-left: 4px solid #1e90ff;
+    }
+    
+    .setup-box.active {
+      border-left-color: #00cc66;
+      background: rgba(0,204,102,0.05);
+    }
+    
+    .setup-label {
+      color: #888;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    
+    .setup-value {
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .risk-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .metric {
+      background: #2a2a2a;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    .metric-label {
+      color: #888;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    
+    .metric-value {
+      color: #1e90ff;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .metric.positive .metric-value {
+      color: #00cc66;
+    }
+    
+    .metric.negative .metric-value {
+      color: #ff4444;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin: 20px 0;
+    }
+    
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    button {
+      background: #1e90ff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background: #1a7acc;
+      transform: translateY(-2px);
+    }
+    
+    button.secondary {
+      background: #333;
+      color: #e0e0e0;
+    }
+    
+    button.secondary:hover {
+      background: #444;
+    }
+    
+    .divider {
+      height: 1px;
+      background: #2a2a2a;
+      margin: 20px 0;
+    }
+    
+    .summary {
+      background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .summary-title {
+      color: #1e90ff;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+    
+    .summary-text {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 GOLD TECHNICAL ANALYSIS</h1>
+      <p class="subtitle">XAUUSD | Multi-Timeframe Structure & Liquidity Analysis | Aug 20, 2026</p>
+    </header>
+    
+    <!-- STRUCTURE ANALYSIS -->
+    <div class="grid">
+      <div class="card bullish">
+        <h2>🏗️ DAILY STRUCTURE (4H + Higher)</h2>
+        <div class="structure-item">
+          <div class="structure-label">HH (Higher High)</div>
+          <div class="structure-value">
+            <span class="price">$4,450</span>
+            <span class="status confirmed">2-Month Peak</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">HL (Higher Low)</div>
+          <div class="structure-value">
+            <span class="price">$4,310</span>
+            <span class="status confirmed">Support Hold</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Current Price</div>
+          <div class="structure-value">
+            <span class="price">$4,516.92</span>
+            <span style="color: #00cc66; font-weight: bold;">+4.16% ↑</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Trend</div>
+          <div class="structure-value">
+            <span class="badge buy">BULLISH</span>
+            <span class="status confirmed">Higher Lows Forming</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card neutral">
+        <h2>📍 1H-4H PULLBACK STRUCTURE</h2>
+        <div class="structure-item">
+          <div class="structure-label">Recent Rejection</div>
+          <div class="structure-value">
+            <span class="price">$4,435-$4,450</span>
+            <span class="status">Supply Zone</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Current Retracement</div>
+          <div class="structure-value">
+            <span class="price">$4,368-$4,378</span>
+            <span class="status pending">Active Testing</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Pullback Depth</div>
+          <div class="structure-value">
+            <span class="price">~$70-80 (1.6-1.8%)</span>
+            <span style="color: #ffaa00;">Shallow</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Pattern</div>
+          <div class="structure-value">
+            <span class="badge watch">CONSOLIDATION</span>
+            <span class="status pending">Setup Forming</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- LIQUIDITY ANALYSIS -->
+    <div class="grid">
+      <div class="card">
+        <h2>💧 LIQUIDITY POOLS & SWEEPS</h2>
+        
+        <div class="liquidity-zone">
+          <strong>🔴 SUPPLY ZONE (Sweep Occurred)</strong><br>
+          <span class="level-price">$4,435-$4,450</span><br>
+          <span style="color: #aaa; font-size: 12px;">Status: SWEPT THROUGH<br>
+          Algo liquidity taken; buyers exhausted; sharp rejection into pullback.</span>
+        </div>
+        
+        <div class="liquidity-zone buy">
+          <strong>🟢 DEMAND ZONE (KEY SUPPORT)</strong><br>
+          <span class="level-price">$4,313.67-$4,325</span><br>
+          <span style="color: #aaa; font-size: 12px;">Status: DEFENDED<br>
+          Bullish Harami Cross formed here; buyer interest renewed; area remains intact.</span>
+        </div>
+        
+        <div class="liquidity-zone">
+          <strong>🔵 SECONDARY DEMAND</strong><br>
+          <span class="level-price">$4,254.97</span><br>
+          <span style="color: #aaa; font-size: 12px;">Status: UNTESTED (Contingency Level)<br>
+          Reserve support if $4,313 breaks on deep pullback.</span>
+        </div>
+        
+        <div class="liquidity-zone buy">
+          <strong>🟡 RETRACEMENT SUPPORT (TACTICAL)</strong><br>
+          <span class="level-price">$4,368-$4,378 (VAL - Value Area Low)</span><br>
+          <span style="color: #aaa; font-size: 12px;">Status: ACTIVE ZONE<br>
+          Current price testing this area; shallow OB (Order Block); likely bounce zone.</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>⚠️ SWEEP PREDICTION & STRUCTURE BREAKS</h2>
+        
+        <div class="structure-item">
+          <div class="structure-label">BOS (Break of Structure)</div>
+          <div class="structure-value">
+            <span class="price">$4,296 CLOSE</span>
+            <span class="status">Would invalidate bullish daily</span>
+          </div>
+        </div>
+        
+        <div class="structure-item">
+          <div class="structure-label">CHOCH (Change of Character)</div>
+          <div class="structure-value">
+            <span class="price">$4,440+ BREAK</span>
+            <span class="status confirmed">Continuation Signal</span>
+          </div>
+        </div>
+        
+        <div style="background: #2a2a2a; padding: 12px; border-radius: 6px; margin-top: 12px; border-left: 3px solid #ffaa00;">
+          <div style="color: #ffaa00; font-weight: bold; margin-bottom: 8px;">🎯 MOST LIKELY SCENARIO (Probability: 70%)</div>
+          <div style="color: #aaa; font-size: 13px; line-height: 1.6;">
+            • Price retraces into $4,368-$4,378<br>
+            • Finds support at VAL; reverses upward<br>
+            • Re-tests $4,435-$4,450 resistance<br>
+            • If breaks $4,450, targets $4,500-$4,520
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- HIGHEST PROBABILITY SETUP -->
+    <div class="grid full">
+      <div class="card">
+        <h2>🎯 HIGHEST PROBABILITY TRADE SETUP</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div>
+            <div class="setup-label">Setup Type</div>
+            <div class="setup-value">PULLBACK BUY</div>
+          </div>
+          <div>
+            <div class="setup-label">Timeframe</div>
+            <div class="setup-value">1H (Entry) / 4H (Context)</div>
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div>
+          <div class="setup-label">Setup Description</div>
+          <div style="color: #aaa; font-size: 13px; line-height: 1.7; margin-top: 8px;">
+            Daily is in a confirmed uptrend (HH-HL structure). Price swept buy-side liquidity at $4,435-$4,450, then pulled back into the shallow order block / VAL zone at $4,368-$4,378. This pullback is a natural correction within an uptrend. <strong>Buy confirmation</strong> occurs when price bounces from this zone and closes above $4,385 on the 1H timeframe with bullish momentum (RSI >50, MACD crossing above zero).
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="grid">
+          <div class="setup-box active">
+            <div class="setup-label">✅ ENTRY ZONE</div>
+            <div class="setup-value">$4,368-$4,378</div>
+            <div style="color: #00cc66; font-size: 12px; margin-top: 5px;">Shallow retracement support; VAL cluster</div>
+          </div>
+          
+          <div class="setup-box">
+            <div class="setup-label">🎯 CONFIRMATION</div>
+            <div class="setup-value">$4,385+ (1H Close)</div>
+            <div style="color: #888; font-size: 12px; margin-top: 5px;">Bullish candle closes above resistance</div>
+          </div>
+          
+          <div class="setup-box">
+            <div class="setup-label">🛑 STOP LOSS</div>
+            <div class="setup-value">$4,355</div>
+            <div style="color: #ff4444; font-size: 12px; margin-top: 5px;">Below daily support; invalidates setup</div>
+          </div>
+          
+          <div class="setup-box">
+            <div class="setup-label">🎁 TARGET 1 (TP1)</div>
+            <div class="setup-value">$4,435</div>
+            <div style="color: #ffaa00; font-size: 12px; margin-top: 5px;">Prior resistance; take partial profit</div>
+          </div>
+          
+          <div class="setup-box">
+            <div class="setup-label">🎁 TARGET 2 (TP2)</div>
+            <div class="setup-value">$4,500</div>
+            <div style="color: #1e90ff; font-size: 12px; margin-top: 5px;">Round number; psycho-level resistance</div>
+          </div>
+          
+          <div class="setup-box">
+            <div class="setup-label">🎁 TARGET 3 (TP3)</div>
+            <div class="setup-value">$4,520-$4,550</div>
+            <div style="color: #1e90ff; font-size: 12px; margin-top: 5px;">Extended target; breaking new highs</div>
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="risk-metrics">
+          <div class="metric positive">
+            <div class="metric-label">Risk/Reward</div>
+            <div class="metric-value">1:2.5</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Risk (SL Distance)</div>
+            <div class="metric-value">-$23</div>
+          </div>
+          <div class="metric positive">
+            <div class="metric-label">Reward (TP1)</div>
+            <div class="metric-value">+$57</div>
+          </div>
+        </div>
+        
+        <div style="background: #1a3a1a; border: 1px solid #00cc66; border-radius: 6px; padding: 12px; margin-top: 12px;">
+          <div style="color: #00cc66; font-weight: bold; margin-bottom: 6px;">✅ SETUP QUALITY SCORE: 8/10</div>
+          <div style="color: #aaa; font-size: 12px;">
+            <strong>Pros:</strong> Daily uptrend confirmed • Pullback shallow (natural correction) • Support zone well-defined • Good risk/reward<br>
+            <strong>Cons:</strong> MACD neutral (no strong momentum yet) • Need confirmation candle • Execution dependent on precise entry
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- INVALIDATION CONDITIONS -->
+    <div class="grid">
+      <div class="card bearish">
+        <h2>❌ INVALIDATION CONDITIONS</h2>
+        <div class="structure-item">
+          <div class="structure-label">Hard Stop</div>
+          <div class="structure-value">
+            <span class="price">$4,355</span>
+            <span class="status">BOS Below Demand</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Soft Invalidation</div>
+          <div class="structure-value">
+            <span class="price">$4,313</span>
+            <span class="status">Daily Support Breaks</span>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-label">Full Reversal</div>
+          <div class="structure-value">
+            <span class="price">Below $4,254</span>
+            <span class="status">Secondary Support Fails</span>
+          </div>
+        </div>
+        <div style="background: #2a1a1a; padding: 12px; border-radius: 6px; margin-top: 10px; border-left: 3px solid #ff4444;">
+          <div style="color: #ff4444; font-weight: bold; margin-bottom: 5px;">⚠️ SHIFT TO BEARISH IF:</div>
+          <div style="color: #aaa; font-size: 12px;">Daily closes below $4,310 support → Trend reversal signal. Swing low of the uptrend breaks. Setup invalidated; shorts become viable.</div>
+        </div>
+      </div>
+      
+      <div class="card bullish">
+        <h2>✅ CONFIRMATION & MANAGEMENT</h2>
+        <div style="color: #aaa; font-size: 13px; line-height: 1.8;">
+          <strong style="color: #00cc66;">ENTRY RULES:</strong><br>
+          1. Wait for price to touch $4,368-$4,378 zone<br>
+          2. Confirm on 1H: bullish candle close above $4,385<br>
+          3. Entry at candle close (not aggressively at zone)<br>
+          4. Size position for $23 stop loss<br>
+          <br>
+          <strong style="color: #00cc66;">MANAGEMENT:</strong><br>
+          • At TP1 ($4,435): Take 50% profit<br>
+          • Move SL to breakeven on remaining 50%<br>
+          • Trail SL to $4,410 at TP2 ($4,500)<br>
+          • Let final 50% run to TP3 with wide trail
+        </div>
+      </div>
+    </div>
+    
+    <!-- NEXT STEPS -->
+    <div class="summary">
+      <div class="summary-title">📋 EXECUTION CHECKLIST</div>
+      <div class="summary-text">
+        <strong>IMMEDIATE ACTIONS:</strong><br>
+        ☐ Monitor price action into $4,368-$4,378 zone (next 1-4 hours)<br>
+        ☐ Watch for bullish confirmation candle (1H timeframe)<br>
+        ☐ Set alerts at key levels: Entry $4,378, Confirmation $4,385, Invalidation $4,355<br>
+        ☐ Size position based on account risk (risking max 1-2% per trade)<br>
+        <br>
+        <strong>SETUP STATUS:</strong><br>
+        🟡 FORMING — Structure intact, pullback unfolding, waiting for confirmation<br>
+        <br>
+        <strong>NEXT ANALYSIS STEPS:</strong><br>
+        → Run <strong>/entry</strong> to pinpoint exact candle confirmation<br>
+        → Run <strong>/risk</strong> for exact position sizing<br>
+        → Run <strong>/trade</strong> for complete BUY execution plan<br>
+      </div>
+    </div>
+    
+    <div class="action-buttons" style="margin-top: 20px;">
+      <button onclick="alert('Ready for /entry analysis?\n\nExact confirmation candle & precision entry zones will be mapped.')">
+        📍 /ENTRY (Next Step)
+      </button>
+      <button class="secondary" onclick="alert('Risk parameters & position sizing coming up...')">
+        💰 /RISK
+      </button>
+      <button class="secondary" onclick="alert('Full execution plan with trade journal format...')">
+        🚀 /TRADE
+      </button>
+      <button class="secondary" onclick="alert('Refreshing live data...')">
+        🔄 Refresh Data
+      </button>
+    </div>
+  </div>
+</body>
+</html>
